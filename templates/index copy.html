@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <title>写真が上手くなる - フードフォト</title>
+    <meta
+      name="description"
+      content="写真がどんどんうまくなる！AIによる映えフード写真アドバイス提供のサービス、それが『フードフォト』"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="../static/img/favicon.png" />
+    <link rel="stylesheet" href="https://unpkg.com/ress/dist/ress.min.css" />
+    <link rel="stylesheet" href="../static/css/style.css" />
+  </head>
+
+  <body>
+    <header id="header">
+      <!-- ヘッダーの内容はそのまま -->
+    </header>
+
+    <main>
+      <!-- メインビジュアルや他のセクションはそのまま -->
+
+      <section id="Upload" class="wrapper">
+        <h2 class="sec-title">アップロード</h2>
+        <!-- フォームの追加 -->
+        <form id="uploadForm">
+          <!-- 画像をクリックするとファイル選択画面が表示される -->
+          <label for="imageInput" id="uploadLabel">
+            <img
+              src="../static/img/upload_area.png"
+              alt="画像をクリックしてアップロード"
+              id="clickableImage"
+            />
+          </label>
+
+          <!-- 非表示のファイル入力 -->
+          <input
+            type="file"
+            id="imageInput"
+            name="image"
+            accept="image/*"
+            style="display: none"
+            required
+          />
+
+          <!-- アップロードボタン -->
+          <button type="submit" id="uploadButton">アップロード</button>
+        </form>
+
+        <!-- アップロードされた画像を表示 -->
+        <div id="uploadedImage"></div>
+
+        <!-- 処理結果画像を表示 -->
+        <div id="resultImage"></div>
+
+        <!-- 結果メッセージを表示 -->
+        <div id="resultMessage"></div>
+      </section>
+
+      <!-- 他のセクションはそのまま -->
+    </main>
+
+    <footer id="footer">
+      <!-- フッターの内容はそのまま -->
+    </footer>
+
+    <!-- JavaScriptコード -->
+    <script>
+      document.getElementById("uploadForm").onsubmit = async function (e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+
+        // アップロードされた画像を表示
+        const uploadedImage = document.getElementById("imageInput").files[0];
+        const uploadedImageURL = URL.createObjectURL(uploadedImage);
+        document.getElementById(
+          "uploadedImage"
+        ).innerHTML = `<h3>アップロードされた画像：</h3><img src="${uploadedImageURL}" alt="アップロードされた画像" />`;
+
+        // 画像をサーバーに送信
+        const response = await fetch("/upload", {
+          method: "POST",
+          body: formData,
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+
+          // 処理結果画像を表示
+          document.getElementById(
+            "resultImage"
+          ).innerHTML = `<h3>処理結果：</h3><img src="data:image/jpeg;base64,${data.image_data}" alt="処理結果画像" />`;
+
+          // 結果メッセージを表示
+          document.getElementById(
+            "resultMessage"
+          ).textContent = `Good: ${data.good_prob.toFixed(
+            2
+          )}%、Not Good: ${data.notgood_prob.toFixed(2)}%`;
+        } else {
+          document.getElementById("resultMessage").textContent =
+            "エラーが発生しました。";
+        }
+      };
+    </script>
+  </body>
+</html>
+
+<!-- ----------------------------------------------------------------------- -->
+
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <title>写真が上手くなる - フードフォト</title>
+
+    <meta
+      name="description"
+      content="写真がどんどんうまくなる！AIによる映えフード写真アドバイス提供のサービス、それが『フードフォト』"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link rel="icon" href="../static/img/favicon.png" />
+    <link rel="stylesheet" href="https://unpkg.com/ress/dist/ress.min.css" />
+    <link rel="stylesheet" href="../static/css/style.css" />
+  </head>
+
+  <body>
+    <header id="header">
+      <h1 class="site-title">
+        <a href="index.html"
+          ><img src="../static/img/logo.png" alt="フードフォト"
+        /></a>
+      </h1>
+      <nav>
+        <ul>
+          <li><a href="#about">このサイトについて</a></li>
+          <li><a href="#Upload">アップロード</a></li>
+          <li><a href="#works">作品</a></li>
+          <!-- <li><a href="#news">News</a></li> -->
+          <li>
+            <a
+              href="https://www.instagram.com/geeeeeeeeeeeekf00d/"
+              target="_blank"
+            >
+              <img
+                class="icon"
+                src="../static/img/icon-instagram.png "
+                alt="インスタグラム"
+              />
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <div id="mainvisual">
+        <picture>
+          <source
+            media="(max-width: 600px)"
+            srcset="../static/img/mainvisual-sp.jpg"
+          />
+          <img
+            src="../static/img/mainvisual-pc.png"
+            alt="テキストテキストテキスト"
+          />
+        </picture>
+      </div>
+
+      <section id="about" class="wrapper">
+        <h2 class="sec-title">このサイトについて</h2>
+        <ul>
+          <li>写真がどんどんうまくなるサイト、『フードフォト』へようこそ！</li>
+          <li>
+            このサイトでは、アップロードした写真に対してAIからアドバイスがもらえます。
+          </li>
+          <li>
+            そのアドバイスを基にして、どんどんいい写真を撮れるようになろう！
+          </li>
+        </ul>
+      </section>
+
+      <section id="Upload" class="wrapper">
+        <h2 class="sec-title">アップロード</h2>
+        <!-- 画像をクリックするとファイル選択画面が表示される -->
+        <label for="imageInput" id="uploadLabel">
+          <img
+            src="../static/img/upload_area.png"
+            alt="画像をクリックしてアップロード"
+            id="clickableImage"
+          />
+        </label>
+
+        <!-- 非表示のファイル入力 -->
+        <input
+          type="file"
+          id="imageInput"
+          name="image"
+          accept="image/*"
+          style="display: none"
+        />
+
+        <!-- アップロードボタン -->
+        <button id="uploadButton"></button>
+
+        <!-- アップロードされた画像を表示 -->
+        <div id="uploadedImage"></div>
+
+        <!-- 顔認識結果を表示 -->
+        <div id="resultImage"></div>
+
+        <!-- 結果メッセージを表示 -->
+        <div id="resultMessage"></div>
+      </section>
+
+      <section id="works" class="wrapper">
+        <h2 class="sec-title">作品</h2>
+        <ul>
+          <li>
+            <img
+              src="../static/img/works1.jpg"
+              alt="テキストテキストテキスト"
+            />
+          </li>
+          <li>
+            <img
+              src="../static/img/works2.jpg"
+              alt="テキストテキストテキスト"
+            />
+          </li>
+          <li>
+            <img
+              src="../static/img/works3.jpg"
+              alt="テキストテキストテキスト"
+            />
+          </li>
+          <li>
+            <img
+              src="../static/img/works4.jpg"
+              alt="テキストテキストテキスト"
+            />
+          </li>
+          <li>
+            <img
+              src="../static/img/works5.jpg"
+              alt="テキストテキストテキスト"
+            />
+          </li>
+          <li>
+            <img
+              src="../static/img/works6.jpg"
+              alt="テキストテキストテキスト"
+            />
+          </li>
+        </ul>
+      </section>
+    </main>
+
+    <footer id="footer">
+      <p>&copy; 2024 フードフォト</p>
+    </footer>
+
+    <script>
+      document.getElementById("uploadForm").onsubmit = async function (e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+
+        // アップロードされた画像を表示
+        const uploadedImage = document.getElementById("imageInput").files[0];
+        const uploadedImageURL = URL.createObjectURL(uploadedImage);
+        document.getElementById(
+          "uploadedImage"
+        ).innerHTML = `<img src="${uploadedImageURL}" alt="アップロードされた画像" />`;
+
+        // 画像をサーバーに送信
+        const response = await fetch("/upload", {
+          method: "POST",
+          body: formData,
+        });
+
+        if (response.ok) {
+          const blob = await response.blob();
+          const resultURL = URL.createObjectURL(blob);
+
+          // 顔認識結果を表示
+          document.getElementById(
+            "resultImage"
+          ).innerHTML = `<img src="${resultURL}" alt="顔認識結果" />`;
+
+          // 結果メッセージを表示
+          const resultMessage =
+            blob.size > 0 ? "認識できました" : "認識できませんでした";
+          document.getElementById("resultMessage").textContent = resultMessage;
+        } else {
+          document.getElementById("resultMessage").textContent =
+            "エラーが発生しました。";
+        }
+      };
+    </script>
+  </body>
+</html>
