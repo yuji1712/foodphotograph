@@ -6,4 +6,4 @@ torch==2.2.1+cpu
 requests==2.31.0
 -f https://download.pytorch.org/whl/torch_stable.html
 
-
+werkzeug==2.0.3
