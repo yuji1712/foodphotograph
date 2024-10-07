@@ -42,7 +42,7 @@
     </header>
 
     <main>
-      <div id="mainvisual">
+      <!-- <div id="mainvisual">
         <picture>
           <source
             media="(max-width: 600px)"
@@ -53,10 +53,26 @@
             alt="テキストテキストテキスト"
           />
         </picture>
+      </div> -->
+
+      <!-- カルーセル用 -->
+      <div id="mainvisual">
+        <picture id="carouselPicture">
+          <source
+            id="carouselSource"
+            media="(max-width: 600px)"
+            srcset="../static/img/mainvisual-sp1.jpg"
+          />
+          <img
+            id="carouselImage"
+            src="../static/img/mainvisual-pc.png"
+            alt="カルーセル画像"
+          />
+        </picture>
       </div>
 
       <section id="about" class="wrapper">
-        <h2 class="sec-title">このサイトについて</h2>
+        <h2 class="sec-title"><br />このサイトについて</h2>
         <ul>
           <li>写真がどんどんうまくなるサイト、『フードフォト』へようこそ！</li>
           <li>
@@ -224,6 +240,40 @@
             "エラーが発生しました。";
         }
       };
+    </script>
+    <!-- JavaScript -->
+    <script>
+      // 画像のパスを配列に格納
+      const images = [
+        {
+          srcset: "../static/img/mainvisual-sp1.jpg",
+          src: "../static/img/mainvisual-pc1.jpg",
+        },
+        {
+          srcset: "../static/img/mainvisual-sp2.jpg",
+          src: "../static/img/mainvisual-pc2.jpg",
+        },
+        {
+          srcset: "../static/img/mainvisual-sp3.jpg",
+          src: "../static/img/mainvisual-pc3.jpg",
+        },
+      ];
+
+      let currentIndex = 0;
+      const carouselSource = document.getElementById("carouselSource");
+      const carouselImage = document.getElementById("carouselImage");
+
+      function showNextImage() {
+        carouselImage.classList.add("fade-out");
+        setTimeout(() => {
+          currentIndex = (currentIndex + 1) % images.length;
+          carouselSource.srcset = images[currentIndex].srcset;
+          carouselImage.src = images[currentIndex].src;
+          carouselImage.classList.remove("fade-out");
+        }, 1000); // この時間はCSSのtransitionと一致させる
+      }
+
+      setInterval(showNextImage, 5000);
     </script>
   </body>
 </html>

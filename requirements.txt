@@ -1,4 +1,6 @@
-gunicorn==20.0.4       # 必ず必要なので記載する
+gunicorn==23.0.0       # 必ず必要なので記載する
 flask==3.0.3
-#requests==2.32.3
-numpy==1.26.4
+numpy==2.1.2
+opencv==4.10.0
+pytorch==2.4.1
+requests==2.32.3

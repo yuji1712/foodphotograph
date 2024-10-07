@@ -68,7 +68,7 @@ li {
 /*-------------------------------------------
 Mainvisual
 -------------------------------------------*/
-#mainvisual {
+/* #mainvisual {
   margin-bottom: 80px;
 }
 #mainvisual img {
@@ -76,6 +76,30 @@ Mainvisual
   max-width: 1920px;
   height: 420px;
   object-fit: cover;
+} */
+
+/* カルーセル用 */
+#mainvisual {
+  position: relative;
+  width: 80%;
+  overflow: hidden;
+  margin: 0 auto;
+}
+
+#mainvisual img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* フェードイン・フェードアウトの効果 */
+#carouselImage {
+  transition: opacity 1s ease-in-out;
+  opacity: 1;
+}
+
+.fade-out {
+  opacity: 0;
 }
 
 /*-------------------------------------------
