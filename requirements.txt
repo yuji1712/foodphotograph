@@ -1,8 +1,8 @@
 gunicorn==20.1.0
 Flask==2.3.3
-numpy==2.1.2
+numpy==1.24.4
 opencv-python-headless==4.5.5.64
-torch==2.2.1+cpu
+torch==2.0.1+cpu
 requests==2.31.0
--f https://download.pytorch.org/whl/torch_stable.html
 Werkzeug==3.0.4
+-f https://download.pytorch.org/whl/torch_stable.html
