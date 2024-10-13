@@ -1,1 +1,1 @@
-*.pth filter=lfs diff=lfs merge=lfs -text
+rn50_photo1.pth filter=lfs diff=lfs merge=lfs -text
