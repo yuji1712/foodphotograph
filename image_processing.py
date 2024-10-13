@@ -31,7 +31,7 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 weights_path = os.path.join(current_dir, 'static', 'rn50_photo1.pth')
 
 # モデルファイルのダウンロード URL を設定
-model_url = 'https://raw.githubusercontent.com/yuji1712/foodphotograph/main/static/rn50_photo1.pth'
+model_url = 'https://drive.google.com/file/d/1-4t8soY8tZbM2Xjy-SnUX73krzxz0CUH/view?usp=sharing'
 
 # モデルファイルが存在しない場合はダウンロード
 if not os.path.exists(weights_path):

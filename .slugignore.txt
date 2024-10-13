@@ -1,6 +1,10 @@
+# .slugignore
 *.log
 __pycache__/
 *.pyc
 .git/
+.env
 tests/
 docs/
+.DS_Store
+venv/
