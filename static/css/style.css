@@ -24,7 +24,7 @@ li {
 }
 .site-title {
   line-height: 1px;
-  width: 100px;
+  width: 150px;
 }
 .site-title a {
   display: block;
@@ -52,14 +52,36 @@ li {
   padding: 10px 0;
 }
 #header li {
-  font-size: 0.9rem;
+  font-size: 1rem;
   margin-left: 30px;
 }
 #header li a {
   color: #24292e;
+  font-weight: bold;
 }
+#header li a {
+  position: relative;
+  color: #24292e;
+  text-decoration: none; /* 通常時の下線を非表示にする */
+}
+
+#header li a::after {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: -2px; /* テキストの下に配置 */
+  left: 0;
+  background-color: #230b7b; /* 下線の色を指定 */
+  transition: width 0.5s ease; /* アニメーションの速度を指定 */
+}
+
+#header li a:hover::after {
+  width: 100%; /* ホバー時に下線がテキスト全体に広がる */
+}
+
 #header li a:hover {
-  opacity: 0.7;
+  color: #230b7b; /* ホバー時にテキストの色を変更 */
 }
 #header li img.icon {
   width: 20px;
@@ -78,12 +100,11 @@ Mainvisual
   object-fit: cover;
 } */
 
-/* カルーセル用 */
 #mainvisual {
   position: relative;
   width: 80%;
-  overflow: hidden;
   margin: 0 auto;
+  margin-bottom: 50px;
 }
 
 #mainvisual img {
@@ -92,27 +113,30 @@ Mainvisual
   display: block;
 }
 
-/* フェードイン・フェードアウトの効果 */
-#carouselImage {
-  transition: opacity 1s ease-in-out;
-  opacity: 1;
-}
-
-.fade-out {
-  opacity: 0;
-}
-
 /*-------------------------------------------
 About
 -------------------------------------------*/
 #about ul {
   margin-bottom: 30px;
+  text-align: center;
 }
 #about li:first-child {
   margin-bottom: 30px;
 }
 #about p {
   text-align: justify;
+}
+#about {
+  width: 100%; /* 横幅を100%に設定して画面いっぱいに広げる */
+  margin: 0; /* 上下のマージンをリセット（必要に応じて変更） */
+  padding: 20px 0; /* 上下に余白を設定し、左右の余白を無くす */
+  background-color: #f3f0f0; /* 背景色（お好みの色に変更可能） */
+  margin-bottom: 50px;
+}
+
+.wrapper {
+  max-width: none; /* 親要素である.wrapperの幅制限を解除 */
+  padding: 0; /* 横の余白をなくす */
 }
 
 /*-------------------------------------------
@@ -130,22 +154,21 @@ Upload
 }
 
 /* 新しいスタイル: ファイル選択をトリガーする画像 */
+#uploadForm {
+  text-align: center; /* もしくはFlexboxを使用する */
+}
+
 #uploadLabel {
-  cursor: pointer;
   display: block;
-  width: 300px;
-  margin: 0 auto;
-  text-align: center;
 }
 
 #clickableImage {
   cursor: pointer;
-  width: 200%; /* 画像の幅を100%に */
+  display: block;
+  margin: 0 auto;
   max-width: 500px; /* 画像の最大幅を500pxに制限 */
-  border: 2px dashed #ccc; /* 枠線の設定 */
-  padding: 20px; /* 内側の余白 */
-  display: block; /* 中央揃えにするためにブロック要素に */
-  margin: 0 auto; /* 左右のマージンを自動にして中央揃え */
+  border: 3px dashed #ccc; /* 枠線の設定 */
+  padding: 10px; /* 内側の余白 */
 }
 
 #imageInput {
@@ -258,17 +281,24 @@ SP
   }
 
   /*-------------------------------------------
-  ヘッダー
-  -------------------------------------------*/
+ヘッダー（画面幅が600px以下の場合のメディアクエリ内に定義されているスタイル）
+-------------------------------------------*/
   #header {
     max-width: 100%;
     height: auto;
     flex-direction: column;
   }
+
   #header li {
-    font-size: 0.8rem;
+    font-size: 1.2rem; /* 文字サイズを1.2remに変更 */
     margin-left: 20px;
   }
+
+  #header li a {
+    font-weight: bold; /* 太字にする */
+    font-size: 1.2rem; /* リンク内の文字サイズも1.2remに変更 */
+  }
+
   #header li:first-child {
     margin-left: 0;
   }

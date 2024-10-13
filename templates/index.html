@@ -16,9 +16,13 @@
   <body>
     <header id="header">
       <h1 class="site-title">
-        <a href="index.html"
-          ><img src="../static/img/logo.png" alt="フードフォト"
-        /></a>
+        <a href="index.html">
+          <img
+            src="../static/img/logo.png"
+            alt="フードフォト"
+            class="logo-img"
+          />
+        </a>
       </h1>
       <nav>
         <ul>
@@ -55,18 +59,11 @@
         </picture>
       </div> -->
 
-      <!-- カルーセル用 -->
       <div id="mainvisual">
-        <picture id="carouselPicture">
-          <source
-            id="carouselSource"
-            media="(max-width: 600px)"
-            srcset="../static/img/mainvisual-sp1.jpg"
-          />
+        <picture>
           <img
-            id="carouselImage"
             src="../static/img/mainvisual-pc.png"
-            alt="カルーセル画像"
+            alt="メインビジュアル画像"
           />
         </picture>
       </div>
@@ -79,7 +76,7 @@
             このサイトでは、アップロードした写真に対してAIからアドバイスがもらえます。
           </li>
           <li>
-            そのアドバイスを基にして、どんどんいい写真を撮れるようになろう！
+            そのアドバイスを基にして、どんどんいい写真を撮れるようになろう！!
           </li>
         </ul>
       </section>
@@ -108,7 +105,7 @@
           />
 
           <!-- アップロードボタン -->
-          <button type="submit" id="uploadButton">...</button>
+          <button type="submit" id="uploadButton"></button>
         </form>
 
         <!-- アップロードされた画像を表示 -->
@@ -142,7 +139,7 @@
               alt="テキストテキストテキスト"
             />
           </li>
-          <li>
+          <!-- <li>
             <img
               src="../static/img/works4.jpg"
               alt="テキストテキストテキスト"
@@ -159,7 +156,7 @@
               src="../static/img/works6.jpg"
               alt="テキストテキストテキスト"
             />
-          </li>
+          </li> -->
         </ul>
       </section>
     </main>
@@ -240,40 +237,6 @@
             "エラーが発生しました。";
         }
       };
-    </script>
-    <!-- JavaScript -->
-    <script>
-      // 画像のパスを配列に格納
-      const images = [
-        {
-          srcset: "../static/img/mainvisual-sp1.jpg",
-          src: "../static/img/mainvisual-pc1.jpg",
-        },
-        {
-          srcset: "../static/img/mainvisual-sp2.jpg",
-          src: "../static/img/mainvisual-pc2.jpg",
-        },
-        {
-          srcset: "../static/img/mainvisual-sp3.jpg",
-          src: "../static/img/mainvisual-pc3.jpg",
-        },
-      ];
-
-      let currentIndex = 0;
-      const carouselSource = document.getElementById("carouselSource");
-      const carouselImage = document.getElementById("carouselImage");
-
-      function showNextImage() {
-        carouselImage.classList.add("fade-out");
-        setTimeout(() => {
-          currentIndex = (currentIndex + 1) % images.length;
-          carouselSource.srcset = images[currentIndex].srcset;
-          carouselImage.src = images[currentIndex].src;
-          carouselImage.classList.remove("fade-out");
-        }, 1000); // この時間はCSSのtransitionと一致させる
-      }
-
-      setInterval(showNextImage, 5000);
     </script>
   </body>
 </html>
