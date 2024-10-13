@@ -21,7 +21,8 @@ test_preprocess = transforms.Compose([
 
 # NN準備
 # モデルのパスとラベル名
-weights = '/Users/imurayuuji/geeksalon/foodphotograph/static/rn50_photo1.pth'
+# weights = '/Users/imurayuuji/geeksalon/foodphotograph/static/rn50_photo1.pth'
+weights = '../static/rn50_photo1.pth'
 label_names = ['1_good', '2_notgood']
 
 # モデルのロード
