@@ -6,6 +6,7 @@ import torch.nn as nn
 from torchvision import models, transforms
 import numpy as np
 import warnings
+import requests  # 追加
 
 # 警告を抑制
 warnings.filterwarnings('ignore', category=UserWarning)
@@ -19,7 +20,8 @@ test_preprocess = transforms.Compose([
     transforms.Resize(224),
     transforms.CenterCrop(224),
     transforms.ToTensor(),
-    transforms.Normalize(mean=[0.485, 0.456, 0.406],std=[0.229, 0.224, 0.225])
+    transforms.Normalize(mean=[0.485, 0.456, 0.406],
+                         std=[0.229, 0.224, 0.225])
 ])
 
 # 現在のファイルのディレクトリを取得
@@ -28,6 +30,27 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 # モデルファイルへのパスを構築
 weights_path = os.path.join(current_dir, 'static', 'rn50_photo1.pth')
 
+# モデルファイルのダウンロード URL を設定
+model_url = 'https://raw.githubusercontent.com/yuji1712/foodphotograph/main/static/rn50_photo1.pth'
+
+# モデルファイルが存在しない場合はダウンロード
+if not os.path.exists(weights_path):
+    print("モデルファイルをダウンロードしています...")
+    response = requests.get(model_url)
+    if response.status_code == 200:
+        with open(weights_path, 'wb') as f:
+            f.write(response.content)
+        print("モデルファイルのダウンロードが完了しました。")
+    else:
+        print(f"モデルファイルのダウンロードに失敗しました。ステータスコード: {response.status_code}")
+        exit(1)
+else:
+    print("モデルファイルは既に存在します。")
+
+# ファイルサイズを確認
+file_size = os.path.getsize(weights_path)
+print(f"モデルファイルのサイズ: {file_size} バイト")
+
 # モデルのロード
 net = models.resnet50(weights=None)  # または `pretrained=False` を使用
 num_features = net.fc.in_features
@@ -35,15 +58,11 @@ net.fc = nn.Linear(num_features, len(label_names))
 
 # 学習したモデルのロード
 try:
-    # モデルファイルの存在確認
-    if not os.path.exists(weights_path):
-        raise FileNotFoundError(f"Model file not found at {weights_path}")
-
     # モデルの状態をロード
     state_dict = torch.load(weights_path, map_location=torch.device('cpu'))
     net.load_state_dict(state_dict)
 except Exception as e:
-    print(f"Error loading the model: {e}")
+    print(f"モデルの読み込み中にエラーが発生しました: {e}")
     exit(1)
 
 net.eval()
