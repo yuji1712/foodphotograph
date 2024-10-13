@@ -30,20 +30,44 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 # モデルファイルへのパスを構築
 weights_path = os.path.join(current_dir, 'static', 'rn50_photo1.pth')
 
-# モデルファイルのダウンロード URL を設定
-model_url = 'https://drive.google.com/file/d/1-4t8soY8tZbM2Xjy-SnUX73krzxz0CUH/view?usp=sharing'
+# Google Drive のファイル ID
+file_id = '1-4t8soY8tZbM2Xjy-SnUX73krzxz0CUH'
 
 # モデルファイルが存在しない場合はダウンロード
 if not os.path.exists(weights_path):
     print("モデルファイルをダウンロードしています...")
-    response = requests.get(model_url)
-    if response.status_code == 200:
-        with open(weights_path, 'wb') as f:
-            f.write(response.content)
-        print("モデルファイルのダウンロードが完了しました。")
-    else:
-        print(f"モデルファイルのダウンロードに失敗しました。ステータスコード: {response.status_code}")
-        exit(1)
+
+    def download_file_from_google_drive(id, destination):
+        URL = "https://docs.google.com/uc?export=download"
+
+        session = requests.Session()
+
+        response = session.get(URL, params={'id': id}, stream=True)
+        token = get_confirm_token(response)
+
+        if token:
+            params = {'id': id, 'confirm': token}
+            response = session.get(URL, params=params, stream=True)
+
+        save_response_content(response, destination)
+
+    def get_confirm_token(response):
+        for key, value in response.cookies.items():
+            if key.startswith('download_warning'):
+                return value
+        return None
+
+    def save_response_content(response, destination):
+        CHUNK_SIZE = 32768
+
+        with open(destination, 'wb') as f:
+            for chunk in response.iter_content(CHUNK_SIZE):
+                if chunk:
+                    f.write(chunk)
+
+    # ファイルをダウンロード
+    download_file_from_google_drive(file_id, weights_path)
+    print("モデルファイルのダウンロードが完了しました。")
 else:
     print("モデルファイルは既に存在します。")
 
@@ -61,6 +85,7 @@ try:
     # モデルの状態をロード
     state_dict = torch.load(weights_path, map_location=torch.device('cpu'))
     net.load_state_dict(state_dict)
+    print("モデルの読み込みが完了しました。")
 except Exception as e:
     print(f"モデルの読み込み中にエラーが発生しました: {e}")
     exit(1)
