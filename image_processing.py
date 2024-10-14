@@ -7,6 +7,8 @@ from torchvision import models, transforms
 import numpy as np
 import warnings
 import requests
+import gdown
+
 
 # 警告を抑制
 warnings.filterwarnings('ignore', category=UserWarning)
@@ -31,7 +33,7 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 weights_path = os.path.join(current_dir, 'static', 'rn50_photo1.pth')
 
 # モデルファイルの期待される最小サイズ（バイト単位）
-MIN_FILE_SIZE = 1 * 1024 * 1024  # 1MB（適宜調整してください）
+MIN_FILE_SIZE = 100 * 1024 * 1024  # 1MB（適宜調整してください）
 
 # Google Drive のファイル ID
 file_id = '1-4t8soY8tZbM2Xjy-SnUX73krzxz0CUH'
