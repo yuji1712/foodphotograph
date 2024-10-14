@@ -70,7 +70,7 @@ except Exception as e:
         print(f"ファイルの先頭部分：\n{file_head}")
     exit(1)
 
-    
+
 MAX_DOWNLOAD_ATTEMPTS = 3
 download_attempts = 0
 
