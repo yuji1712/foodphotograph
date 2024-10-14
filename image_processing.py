@@ -31,7 +31,7 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 weights_path = os.path.join(current_dir, 'static', 'rn50_photo1.pth')
 
 # モデルファイルの期待される最小サイズ（バイト単位）
-MIN_FILE_SIZE = 90 * 1024 * 1024  # 90MB（モデルファイルの実際のサイズに合わせてください）
+MIN_FILE_SIZE = 100 * 1024 * 1024  # 90MB（モデルファイルの実際のサイズに合わせてください）
 
 # Google ドライブの共有リンクまたはファイルID
 file_id = '1-4t8soY8tZbM2Xjy-SnUX73krzxz0CUH'
