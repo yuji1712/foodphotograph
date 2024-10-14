@@ -6,7 +6,7 @@ import torch.nn as nn
 from torchvision import models, transforms
 import numpy as np
 import warnings
-import requests  # 追加
+import requests
 
 # 警告を抑制
 warnings.filterwarnings('ignore', category=UserWarning)
@@ -30,50 +30,59 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 # モデルファイルへのパスを構築
 weights_path = os.path.join(current_dir, 'static', 'rn50_photo1.pth')
 
+# モデルファイルの期待される最小サイズ（バイト単位）
+MIN_FILE_SIZE = 1 * 1024 * 1024  # 1MB（適宜調整してください）
+
 # Google Drive のファイル ID
 file_id = '1-4t8soY8tZbM2Xjy-SnUX73krzxz0CUH'
 
-# モデルファイルが存在しない場合はダウンロード
-if not os.path.exists(weights_path):
+# ダウンロード関数の定義
+def download_file_from_google_drive(id, destination):
+    URL = "https://docs.google.com/uc?export=download"
+
+    session = requests.Session()
+
+    response = session.get(URL, params={'id': id}, stream=True)
+    token = get_confirm_token(response)
+
+    if token:
+        params = {'id': id, 'confirm': token}
+        response = session.get(URL, params=params, stream=True)
+
+    save_response_content(response, destination)
+
+def get_confirm_token(response):
+    for key, value in response.cookies.items():
+        if key.startswith('download_warning'):
+            return value
+    return None
+
+def save_response_content(response, destination):
+    CHUNK_SIZE = 32768
+
+    with open(destination, 'wb') as f:
+        for chunk in response.iter_content(CHUNK_SIZE):
+            if chunk:
+                f.write(chunk)
+
+# モデルファイルが存在しないか、サイズが小さい場合は再ダウンロード
+need_download = True
+if os.path.exists(weights_path):
+    file_size = os.path.getsize(weights_path)
+    print(f"モデルファイルは既に存在します。サイズ: {file_size} バイト")
+    if file_size >= MIN_FILE_SIZE:
+        need_download = False
+    else:
+        print("モデルファイルが不完全です。再ダウンロードを試みます。")
+        os.remove(weights_path)
+
+if need_download:
     print("モデルファイルをダウンロードしています...")
-
-    def download_file_from_google_drive(id, destination):
-        URL = "https://docs.google.com/uc?export=download"
-
-        session = requests.Session()
-
-        response = session.get(URL, params={'id': id}, stream=True)
-        token = get_confirm_token(response)
-
-        if token:
-            params = {'id': id, 'confirm': token}
-            response = session.get(URL, params=params, stream=True)
-
-        save_response_content(response, destination)
-
-    def get_confirm_token(response):
-        for key, value in response.cookies.items():
-            if key.startswith('download_warning'):
-                return value
-        return None
-
-    def save_response_content(response, destination):
-        CHUNK_SIZE = 32768
-
-        with open(destination, 'wb') as f:
-            for chunk in response.iter_content(CHUNK_SIZE):
-                if chunk:
-                    f.write(chunk)
-
-    # ファイルをダウンロード
     download_file_from_google_drive(file_id, weights_path)
     print("モデルファイルのダウンロードが完了しました。")
-else:
-    print("モデルファイルは既に存在します。")
-
-# ファイルサイズを確認
-file_size = os.path.getsize(weights_path)
-print(f"モデルファイルのサイズ: {file_size} バイト")
+    # ダウンロード後のサイズを確認
+    file_size = os.path.getsize(weights_path)
+    print(f"ダウンロードしたモデルファイルのサイズ: {file_size} バイト")
 
 # モデルのロード
 net = models.resnet50(weights=None)  # または `pretrained=False` を使用

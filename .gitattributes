@@ -2,4 +2,3 @@ rn50_photo1.pth filter=lfs diff=lfs merge=lfs -text
 a76ea828b375416ebd4d85733634067b9e1d33e9cbd019f8ddb1d54dd35ef300 filter=lfs diff=lfs merge=lfs -text
 *.jpg filter=lfs diff=lfs merge=lfs -text
 *.png filter=lfs diff=lfs merge=lfs -text
-.git filter=lfs diff=lfs merge=lfs -text
