@@ -6,9 +6,7 @@ import torch.nn as nn
 from torchvision import models, transforms
 import numpy as np
 import warnings
-import requests
 import gdown
-
 
 # 警告を抑制
 warnings.filterwarnings('ignore', category=UserWarning)
@@ -33,31 +31,27 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 weights_path = os.path.join(current_dir, 'static', 'rn50_photo1.pth')
 
 # モデルファイルの期待される最小サイズ（バイト単位）
-MIN_FILE_SIZE = 100 * 1024 * 1024  # 1MB（適宜調整してください）
-
-import gdown
+MIN_FILE_SIZE = 90 * 1024 * 1024  # 90MB（モデルファイルの実際のサイズに合わせてください）
 
 # Google ドライブの共有リンクまたはファイルID
 file_id = '1-4t8soY8tZbM2Xjy-SnUX73krzxz0CUH'
 url = f'https://drive.google.com/uc?id={file_id}'
 
-# ダウンロード先のパス
-weights_path = os.path.join(current_dir, 'static', 'rn50_photo1.pth')
-
 # モデルファイルが存在しない場合、ダウンロードを実行
-if not os.path.exists(weights_path):
+if not os.path.exists(weights_path) or os.path.getsize(weights_path) < MIN_FILE_SIZE:
     print("モデルファイルをダウンロードしています...")
     gdown.download(url, weights_path, quiet=False)
     print("モデルファイルのダウンロードが完了しました。")
 else:
     print("モデルファイルは既に存在します。")
 
+# モデルの定義
+net = models.resnet50(weights=None)  # または`pretrained=False`を使用
+num_features = net.fc.in_features
+net.fc = nn.Linear(num_features, len(label_names))
+
 # モデルのロード
 try:
-    # ファイルの存在とサイズを確認
-    if not os.path.exists(weights_path) or os.path.getsize(weights_path) < MIN_FILE_SIZE:
-        raise ValueError("モデルファイルが存在しないか、サイズが小さすぎます。")
-
     # モデルの状態をロード
     state_dict = torch.load(weights_path, map_location=torch.device('cpu'))
     net.load_state_dict(state_dict)
@@ -70,29 +64,9 @@ except Exception as e:
         print(f"ファイルの先頭部分：\n{file_head}")
     exit(1)
 
-
-MAX_DOWNLOAD_ATTEMPTS = 3
-download_attempts = 0
-
-while need_download and download_attempts < MAX_DOWNLOAD_ATTEMPTS:
-    print("モデルファイルをダウンロードしています...")
-    download_file_from_google_drive(file_id, weights_path)
-    print("モデルファイルのダウンロードが完了しました。")
-    # ダウンロード後のサイズを確認
-    file_size = os.path.getsize(weights_path)
-    print(f"ダウンロードしたモデルファイルのサイズ: {file_size} バイト")
-
-    if file_size >= MIN_FILE_SIZE:
-        need_download = False
-    else:
-        print("モデルファイルが不完全です。再ダウンロードを試みます。")
-        os.remove(weights_path)
-        download_attempts += 1
-
-if need_download:
-    print("モデルファイルのダウンロードに失敗しました。プログラムを終了します。")
-    exit(1)
-
+# デバイスの設定
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+net.to(device)
 
 def judge(img_cv2):
     # OpenCVの画像をRGBに変換し、PIL Imageに変換
