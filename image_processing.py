@@ -7,7 +7,7 @@ from torchvision import models, transforms
 import numpy as np
 import warnings
 import requests
-import gdown
+# import gdown
 
 
 # 警告を抑制
