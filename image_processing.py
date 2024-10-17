@@ -1,5 +1,7 @@
-from google.cloud import storage
 import os
+import json
+from google.oauth2 import service_account
+from google.cloud import storage
 import torch
 import torch.nn as nn
 from torchvision import models, transforms
@@ -13,8 +15,12 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 def download_model_from_gcs(bucket_name, source_blob_name, destination_file_name):
     """Google Cloud Storageからモデルをダウンロードする関数"""
     
-    # Google Cloud Storageクライアントを初期化
-    storage_client = storage.Client()
+    # 環境変数からサービスアカウントの情報を取得
+    credentials_info = json.loads(os.environ.get('GOOGLE_CREDENTIALS'))
+    credentials = service_account.Credentials.from_service_account_info(credentials_info)
+    
+    # 認証情報を使用してクライアントを作成
+    storage_client = storage.Client(credentials=credentials)
 
     # バケットオブジェクトを取得
     bucket = storage_client.bucket(bucket_name)
@@ -27,15 +33,17 @@ def download_model_from_gcs(bucket_name, source_blob_name, destination_file_name
     print(f"Downloaded model to {destination_file_name}")
 
 # GCSからのダウンロードに関する設定
-bucket_name = 'your-bucket-name'  # あなたのバケット名
-multi_task_model_blob = 'path/to/multi_task_model.pth'  # multi_task_modelのGCS内のパス
-score_model_blob = 'path/to/score_model.pth'  # score_modelのGCS内のパス
+bucket_name = 'foodphotograph'  # あなたのバケット名
+multi_task_model_blob = 'model/multi_task_model.pth'  # multi_task_modelのGCS内のパス
+score_model_blob = 'model/rn50_photo1.pth'  # score_modelのGCS内のパス
 multi_task_model_local = 'multi_task_model.pth'  # ローカルに保存するファイル名
-score_model_local = 'score_model.pth'  # ローカルに保存するファイル名
+score_model_local = 'rn50_photo1.pth'  # ローカルに保存するファイル名
 
 # Google Cloud Storageからモデルをダウンロード
 download_model_from_gcs(bucket_name, multi_task_model_blob, multi_task_model_local)
 download_model_from_gcs(bucket_name, score_model_blob, score_model_local)
+
+
 
 # マルチタスクモデルの定義
 class MultiTaskResNet(nn.Module):
