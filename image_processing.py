@@ -44,7 +44,6 @@ download_model_from_gcs(bucket_name, multi_task_model_blob, multi_task_model_loc
 download_model_from_gcs(bucket_name, score_model_blob, score_model_local)
 
 
-
 # マルチタスクモデルの定義
 class MultiTaskResNet(nn.Module):
     def __init__(self):
