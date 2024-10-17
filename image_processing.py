@@ -1,3 +1,4 @@
+from google.cloud import storage
 import os
 import torch
 import torch.nn as nn
@@ -7,6 +8,34 @@ import cv2
 
 # デバイスの設定（GPUが利用可能ならGPUを使用）
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
+# Google Cloud Storageからモデルをダウンロードする関数
+def download_model_from_gcs(bucket_name, source_blob_name, destination_file_name):
+    """Google Cloud Storageからモデルをダウンロードする関数"""
+    
+    # Google Cloud Storageクライアントを初期化
+    storage_client = storage.Client()
+
+    # バケットオブジェクトを取得
+    bucket = storage_client.bucket(bucket_name)
+
+    # バケット内のファイル（Blob）を指定
+    blob = bucket.blob(source_blob_name)
+
+    # ファイルをローカルにダウンロード
+    blob.download_to_filename(destination_file_name)
+    print(f"Downloaded model to {destination_file_name}")
+
+# GCSからのダウンロードに関する設定
+bucket_name = 'your-bucket-name'  # あなたのバケット名
+multi_task_model_blob = 'path/to/multi_task_model.pth'  # multi_task_modelのGCS内のパス
+score_model_blob = 'path/to/score_model.pth'  # score_modelのGCS内のパス
+multi_task_model_local = 'multi_task_model.pth'  # ローカルに保存するファイル名
+score_model_local = 'score_model.pth'  # ローカルに保存するファイル名
+
+# Google Cloud Storageからモデルをダウンロード
+download_model_from_gcs(bucket_name, multi_task_model_blob, multi_task_model_local)
+download_model_from_gcs(bucket_name, score_model_blob, score_model_local)
 
 # マルチタスクモデルの定義
 class MultiTaskResNet(nn.Module):
@@ -42,11 +71,6 @@ class MultiTaskResNet(nn.Module):
             'sizzle_steam': sizzle_steam_output
         }
 
-# モデルのロード
-current_dir = os.path.dirname(os.path.abspath(__file__))
-multi_task_weights_path = os.path.join(current_dir, 'static', 'multi_task_model.pth')
-score_weights_path = os.path.join(current_dir, 'static', 'rn50_photo1.pth')
-
 # モデルのインスタンス化
 net = MultiTaskResNet().to(device)
 
@@ -58,7 +82,7 @@ score_net = score_net.to(device)
 
 # 学習したモデルのロード（multi_task_model）
 try:
-    checkpoint = torch.load(multi_task_weights_path, map_location=device)
+    checkpoint = torch.load(multi_task_model_local, map_location=device)
     net.load_state_dict(checkpoint['model_state_dict'])
     net.eval()
     print("multi_task_modelの読み込みが完了しました。")
@@ -68,7 +92,7 @@ except Exception as e:
 
 # 学習したモデルのロード（score_model）
 try:
-    checkpoint = torch.load(score_weights_path, map_location=device)
+    checkpoint = torch.load(score_model_local, map_location=device)
     state_dict = checkpoint['model_state_dict']
     score_net.load_state_dict(state_dict)
     score_net.eval()
@@ -76,7 +100,6 @@ try:
 except Exception as e:
     print(f"score_modelの読み込み中にエラーが発生しました: {e}")
     exit(1)
-
 
 # 前処理の定義
 test_preprocess = transforms.Compose([
@@ -160,4 +183,3 @@ def judge(img_cv2):
         import traceback
         traceback.print_exc()
         raise
-
