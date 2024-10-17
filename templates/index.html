@@ -8,19 +8,25 @@
       content="写真がどんどんうまくなる！AIによる映えフード写真アドバイス提供のサービス、それが『フードフォト』"
     />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="icon" href="../static/img/favicon.png" />
+    <link
+      rel="icon"
+      href="{{ url_for('static', filename='img/favicon.png') }}"
+    />
     <link rel="stylesheet" href="https://unpkg.com/ress/dist/ress.min.css" />
-    <link rel="stylesheet" href="../static/css/style.css" />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
   </head>
 
   <body>
     <header id="header">
       <h1 class="site-title">
-        <a href="index.html">
+        <a href="/">
           <img
-            src="../static/img/logo.png"
+            src="{{ url_for('static', filename='img/logo.png') }}"
             alt="フードフォト"
-            class="logo-img"
+            class="logo-img-header"
           />
         </a>
       </h1>
@@ -36,7 +42,7 @@
             >
               <img
                 class="icon"
-                src="../static/img/icon-instagram.png "
+                src="{{ url_for('static', filename='img/icon-instagram.png') }}"
                 alt="インスタグラム"
               />
             </a>
@@ -46,41 +52,41 @@
     </header>
 
     <main>
-      <!-- <div id="mainvisual">
-        <picture>
-          <source
-            media="(max-width: 600px)"
-            srcset="../static/img/mainvisual-sp.jpg"
-          />
-          <img
-            src="../static/img/mainvisual-pc.png"
-            alt="テキストテキストテキスト"
-          />
-        </picture>
-      </div> -->
-
+      <!-- メインビジュアル -->
       <div id="mainvisual">
         <picture>
           <img
-            src="../static/img/mainvisual-pc.png"
+            src="{{ url_for('static', filename='img/mainvisual-pc.png') }}"
             alt="メインビジュアル画像"
           />
         </picture>
       </div>
 
+      <!-- このサイトについて -->
       <section id="about" class="wrapper">
         <h2 class="sec-title"><br />このサイトについて</h2>
+
+        <!-- ロゴを挿入 -->
+        <div class="about-logo">
+          <img
+            src="{{ url_for('static', filename='img/logo.png') }}"
+            alt="フードフォト"
+            class="logo-img"
+          />
+        </div>
+
         <ul>
           <li>写真がどんどんうまくなるサイト、『フードフォト』へようこそ！</li>
           <li>
             このサイトでは、アップロードした写真に対してAIからアドバイスがもらえます。
           </li>
           <li>
-            そのアドバイスを基にして、どんどんいい写真を撮れるようになろう！!
+            そのアドバイスを基にして、どんどんいい写真を撮れるようになろう！
           </li>
         </ul>
       </section>
 
+      <!-- アップロードセクション -->
       <section id="Upload" class="wrapper">
         <h2 class="sec-title">アップロード</h2>
         <!-- フォームの追加 -->
@@ -88,7 +94,7 @@
           <!-- 画像をクリックするとファイル選択画面が表示される -->
           <label for="imageInput" id="uploadLabel">
             <img
-              src="../static/img/upload_area.png"
+              src="{{ url_for('static', filename='img/upload_area.png') }}"
               alt="画像をクリックしてアップロード"
               id="clickableImage"
             />
@@ -105,7 +111,7 @@
           />
 
           <!-- アップロードボタン -->
-          <button type="submit" id="uploadButton"></button>
+          <button type="submit" id="uploadButton">判定！</button>
         </form>
 
         <!-- アップロードされた画像を表示 -->
@@ -118,125 +124,38 @@
         <div id="resultMessage"></div>
       </section>
 
+      <!-- 作品セクション -->
       <section id="works" class="wrapper">
-        <h2 class="sec-title">作品</h2>
-        <ul>
-          <li>
-            <img
-              src="../static/img/works1.jpg"
-              alt="テキストテキストテキスト"
-            />
-          </li>
-          <li>
-            <img
-              src="../static/img/works2.jpg"
-              alt="テキストテキストテキスト"
-            />
-          </li>
-          <li>
-            <img
-              src="../static/img/works3.jpg"
-              alt="テキストテキストテキスト"
-            />
-          </li>
-          <!-- <li>
-            <img
-              src="../static/img/works4.jpg"
-              alt="テキストテキストテキスト"
-            />
-          </li>
-          <li>
-            <img
-              src="../static/img/works5.jpg"
-              alt="テキストテキストテキスト"
-            />
-          </li>
-          <li>
-            <img
-              src="../static/img/works6.jpg"
-              alt="テキストテキストテキスト"
-            />
-          </li> -->
-        </ul>
+        <div class="works-container">
+          <h2 class="sec-title">作品</h2>
+          <ul>
+            <li>
+              <img
+                src="{{ url_for('static', filename='img/works1.jpg') }}"
+                alt="テキストテキストテキスト"
+              />
+            </li>
+            <li>
+              <img
+                src="{{ url_for('static', filename='img/works2.jpg') }}"
+                alt="テキストテキストテキスト"
+              />
+            </li>
+            <li>
+              <img
+                src="{{ url_for('static', filename='img/works3.jpg') }}"
+                alt="テキストテキストテキスト"
+              />
+            </li>
+            <!-- 他の作品画像も同様に追加 -->
+          </ul>
+        </div>
       </section>
     </main>
 
     <footer id="footer">
       <p>&copy; 2024 フードフォト</p>
     </footer>
-
-    <!-- JavaScriptコード -->
-    <script>
-      // 画像が選択されたときに、アップロードエリアの画像を変更
-      document
-        .getElementById("imageInput")
-        .addEventListener("change", function () {
-          const uploadedImage = this.files[0];
-          if (uploadedImage) {
-            const uploadedImageURL = URL.createObjectURL(uploadedImage);
-            document.getElementById("clickableImage").src = uploadedImageURL;
-          }
-        });
-
-      document.getElementById("uploadForm").onsubmit = async function (e) {
-        e.preventDefault();
-        const formData = new FormData(this);
-
-        // アップロードされた画像を表示
-        const uploadedImage = document.getElementById("imageInput").files[0];
-        const uploadedImageURL = URL.createObjectURL(uploadedImage);
-        document.getElementById(
-          "uploadedImage"
-        ).innerHTML = `<h3>アップロードされた画像：</h3><img src="${uploadedImageURL}" alt="アップロードされた画像" />`;
-
-        // 画像をサーバーに送信
-        const response = await fetch("/upload", {
-          method: "POST",
-          body: formData,
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          console.log("受け取ったデータ:", data); // デバッグ用
-
-          // データの型を確認
-          console.log("good_prob の型:", typeof data.good_prob);
-          console.log("notgood_prob の型:", typeof data.notgood_prob);
-
-          // スコアを数値に変換
-          const goodProb = parseFloat(data.good_prob);
-          const notGoodProb = parseFloat(data.notgood_prob);
-
-          // 変換後の値と型を確認
-          console.log("goodProb の値:", goodProb, "型:", typeof goodProb);
-          console.log(
-            "notGoodProb の値:",
-            notGoodProb,
-            "型:",
-            typeof notGoodProb
-          );
-
-          // 処理結果画像を表示
-          document.getElementById(
-            "resultImage"
-          ).innerHTML = `<h3>処理結果：</h3><img src="data:image/jpeg;base64,${data.image_data}" alt="処理結果画像" />`;
-
-          // 結果メッセージを表示
-          if (!isNaN(goodProb) && !isNaN(notGoodProb)) {
-            document.getElementById(
-              "resultMessage"
-            ).innerHTML = `<h3>分析結果：</h3><p>Good: ${goodProb.toFixed(
-              2
-            )}%、Not Good: ${notGoodProb.toFixed(2)}%</p>`;
-          } else {
-            document.getElementById("resultMessage").textContent =
-              "スコアを取得できませんでした。";
-          }
-        } else {
-          document.getElementById("resultMessage").textContent =
-            "エラーが発生しました。";
-        }
-      };
-    </script>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
   </body>
 </html>
