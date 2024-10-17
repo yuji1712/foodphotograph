@@ -1,0 +1,3 @@
+ver6
+
+2モデル同時読み込みができるようにimage_processing.pyを修正

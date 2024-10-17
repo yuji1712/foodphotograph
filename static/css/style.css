@@ -39,30 +39,36 @@ li {
 ヘッダー
 -------------------------------------------*/
 #header {
-  max-width: 960px;
+  position: fixed; /* ヘッダーを画面上部に固定 */
+  top: 0; /* 上部に固定 */
+  left: 0; /* 左端に固定 */
+  width: 100%; /* 横幅を画面いっぱいに広げる */
+  z-index: 1000; /* 他の要素より前面に表示 */
+  background-color: white; /* 背景色を設定（スクロール時に見えるように） */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* ヘッダーに影を追加 */
+  max-width: none; /* ヘッダーの最大幅制限を解除 */
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 270px;
-  margin: 0 auto;
+  height: 100px;
   padding: 0 4%;
 }
+
 #header ul {
   display: flex;
   padding: 10px 0;
 }
+
 #header li {
   font-size: 1rem;
   margin-left: 30px;
 }
-#header li a {
-  color: #24292e;
-  font-weight: bold;
-}
+
 #header li a {
   position: relative;
   color: #24292e;
-  text-decoration: none; /* 通常時の下線を非表示にする */
+  font-weight: bold;
+  text-decoration: none;
 }
 
 #header li a::after {
@@ -70,21 +76,32 @@ li {
   position: absolute;
   width: 0;
   height: 2px;
-  bottom: -2px; /* テキストの下に配置 */
+  bottom: -2px;
   left: 0;
-  background-color: #230b7b; /* 下線の色を指定 */
-  transition: width 0.5s ease; /* アニメーションの速度を指定 */
+  background-color: #230b7b;
+  transition: width 0.5s ease;
 }
 
 #header li a:hover::after {
-  width: 100%; /* ホバー時に下線がテキスト全体に広がる */
+  width: 100%;
 }
 
 #header li a:hover {
-  color: #230b7b; /* ホバー時にテキストの色を変更 */
+  color: #230b7b;
 }
+
 #header li img.icon {
   width: 20px;
+}
+
+.logo-img-header {
+  width: 80px; /* ロゴの横幅を80pxに設定 */
+  height: auto; /* 縦横比を維持して高さを自動調整 */
+}
+
+/* ページ全体の内容がヘッダーに被らないように余白を追加 */
+body {
+  padding-top: 270px; /* ヘッダーの高さ分だけ余白を追加 */
 }
 
 /*-------------------------------------------
@@ -139,9 +156,24 @@ About
   padding: 0; /* 横の余白をなくす */
 }
 
+.about-logo {
+  text-align: center; /* ロゴを中央揃え */
+  margin: 20px 0; /* 上下に余白を追加 */
+}
+
+.logo-img {
+  width: 250px; /* ロゴの幅を設定（お好みで調整可能） */
+  height: auto; /* 縦横比を保ちながら高さを自動調整 */
+}
+
 /*-------------------------------------------
 Upload
 -------------------------------------------*/
+#Upload {
+  padding: 30px 0; /* 上下に余白を設定 */
+  margin-bottom: 50px;
+}
+
 #Upload ul {
   display: flex;
   justify-content: space-between;
@@ -182,9 +214,66 @@ Upload
   margin: 20px auto;
 }
 
+/* style.css */
+
+#uploadButton {
+  background-color: #4caf50; /* ボタンの背景色を緑色に */
+  color: white; /* ボタンの文字色を白に */
+  padding: 12px 24px; /* 上下12px、左右24pxのパディング */
+  text-align: center; /* テキストを中央揃え */
+  text-decoration: none; /* テキストの下線を消す */
+  display: inline-block; /* インラインブロック要素にする */
+  font-size: 16px; /* フォントサイズを16pxに */
+  margin: 20px auto; /* 上下に20pxのマージン、左右は自動 */
+  cursor: pointer; /* カーソルをポインターに */
+  border: none; /* ボーダーをなくす */
+  border-radius: 5px; /* ボタンの角を丸くする */
+  /* box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); ボタンに影をつける */
+}
+
+#uploadButton:hover {
+  background-color: #45a049; /* ホバー時の背景色を少し濃くする */
+}
+
+/* 分析結果のカードスタイル */
+.result-card {
+  max-width: 600px;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.result-card p {
+  font-size: 16px;
+  line-height: 1.5;
+  margin: 12px 0;
+}
+
+.result-card strong {
+  color: #333;
+}
+
 /*-------------------------------------------
 Works
 -------------------------------------------*/
+#works {
+  margin-top: 50px;
+  width: 100%; /* 横幅を100%に設定して背景を横いっぱいに広げる */
+  padding: 20px 0; /* 上下に余白を設定 */
+  background-color: #f3f0f0; /* 背景色を設定 */
+  margin-bottom: 50px;
+
+  /* padding: 30px 0; 上下に余白を設定 */
+}
+
+.works-container {
+  max-width: 960px; /* 写真などのコンテンツの横幅を制限 */
+  margin: 0 auto; /* コンテンツを中央に配置 */
+  padding: 0 20px; /* コンテンツの左右に少し余白を追加 */
+}
+
 #works ul {
   display: flex;
   justify-content: space-between;
@@ -261,7 +350,7 @@ Contact
 #footer {
   background-color: #24292e;
   color: #fff;
-  font-size: 0.5rem;
+  font-size: 0.7rem;
   padding: 10px 20px;
   text-align: center;
 }
