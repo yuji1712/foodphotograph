@@ -21,6 +21,10 @@ def download_model_from_gcs(bucket_name, source_blob_name, destination_file_name
 
 # サーバー起動時にモデルをダウンロードする処理
 @app.before_first_request
+def initialize():
+    # 初回リクエストの前に実行する処理
+    print("This runs before the first request")
+
 def setup_models():
     bucket_name = 'foodphotograph'  # Google Cloud Storageに作成したバケットの名前
     multi_task_model_blob = 'model/multi_task_model.pth'  # GCS内のmulti-taskモデルファイルのパス
