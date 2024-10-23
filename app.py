@@ -5,7 +5,9 @@ import numpy as np
 from PIL import Image
 import io
 import base64
+import json
 from google.cloud import storage  # GCSからモデルをダウンロードするためのライブラリ
+from google.oauth2 import service_account
 from image_processing import judge  # image_processing.py から judge 関数をインポート
 
 app = Flask(__name__)
@@ -13,7 +15,12 @@ app = Flask(__name__)
 # Google Cloud Storageからモデルをダウンロードする関数
 def download_model_from_gcs(bucket_name, source_blob_name, destination_file_name):
     """Google Cloud Storageからモデルをダウンロードする関数"""
-    storage_client = storage.Client()
+    # 環境変数からサービスアカウントの情報を取得
+    credentials_info = json.loads(os.environ.get('GOOGLE_CREDENTIALS'))
+    credentials = service_account.Credentials.from_service_account_info(credentials_info)
+
+    # Google Cloud Storageクライアントを初期化
+    storage_client = storage.Client(credentials=credentials)
     bucket = storage_client.bucket(bucket_name)
     blob = bucket.blob(source_blob_name)
     blob.download_to_filename(destination_file_name)
