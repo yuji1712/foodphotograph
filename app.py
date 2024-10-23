@@ -5,9 +5,34 @@ import numpy as np
 from PIL import Image
 import io
 import base64
+from google.cloud import storage  # GCSからモデルをダウンロードするためのライブラリ
 from image_processing import judge  # image_processing.py から judge 関数をインポート
 
 app = Flask(__name__)
+
+# Google Cloud Storageからモデルをダウンロードする関数
+def download_model_from_gcs(bucket_name, source_blob_name, destination_file_name):
+    """Google Cloud Storageからモデルをダウンロードする関数"""
+    storage_client = storage.Client()
+    bucket = storage_client.bucket(bucket_name)
+    blob = bucket.blob(source_blob_name)
+    blob.download_to_filename(destination_file_name)
+    print(f"Downloaded model to {destination_file_name}")
+
+# サーバー起動時にモデルをダウンロードする処理
+@app.before_first_request
+def setup_models():
+    bucket_name = 'foodphotograph'  # Google Cloud Storageに作成したバケットの名前
+    multi_task_model_blob = 'model/multi_task_model.pth'  # GCS内のmulti-taskモデルファイルのパス
+    score_model_blob = 'model/rn50_photo1.pth'  # GCS内のスコアモデルファイルのパス
+    multi_task_model_local = 'multi_task_model.pth'  # ローカルに保存するファイル名
+    score_model_local = 'rn50_photo1.pth'  # ローカルに保存するファイル名
+
+
+    # Google Cloud Storageからモデルをダウンロード
+    download_model_from_gcs(bucket_name, multi_task_model_blob, multi_task_model_local)
+    download_model_from_gcs(bucket_name, score_model_blob, score_model_local)
+    print("Models have been downloaded and are ready for use.")
 
 # 画像を受け取って処理し、結果を返すエンドポイント
 @app.route('/upload', methods=['POST'])
@@ -53,81 +78,3 @@ def index():
 if __name__ == '__main__':
     # サーバーの実行
     app.run(debug=True)
-
-
-# -----------------------------------------------------
-
-# import os
-# import cv2
-# import torch
-# from flask import Flask, request, jsonify, render_template
-# from werkzeug.utils import secure_filename
-# from image_processing import judge, calculate_score  # image_processing.py からインポート
-# from PIL import Image
-# import numpy as np
-
-# # Flaskアプリケーションのインスタンス化
-# app = Flask(__name__)
-
-# # アップロードされる画像の保存先ディレクトリ
-# UPLOAD_FOLDER = 'static/uploads'
-# app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-
-# # 画像の拡張子許可
-# ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
-
-# # 許可されたファイルかを確認する関数
-# def allowed_file(filename):
-#     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
-# # ルートページの表示
-# @app.route('/')
-# def index():
-#     return render_template('index.html')
-
-# # 画像アップロードと処理のエンドポイント
-# @app.route('/upload', methods=['POST'])
-# def upload_image():
-#     # 画像が正しく送信されたか確認
-#     if 'image' not in request.files:
-#         return jsonify({'error': 'No image part in the request'}), 400
-
-#     file = request.files['image']
-
-#     # ファイル名が有効かを確認
-#     if file.filename == '':
-#         return jsonify({'error': 'No selected file'}), 400
-
-#     # 画像ファイルが許可されたものであるかを確認
-#     if file and allowed_file(file.filename):
-#         # 画像を保存
-#         filename = secure_filename(file.filename)
-#         filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-#         file.save(filepath)
-
-#         # 画像を読み込んでOpenCV形式に変換
-#         img = Image.open(filepath)
-#         img_cv2 = cv2.cvtColor(np.array(img), cv2.COLOR_RGB2BGR)
-
-#         try:
-#             # 画像処理を行う（judge関数とスコア計算関数を呼び出し）
-#             processed_image, results = judge(img_cv2)
-#             score = calculate_score(processed_image)
-
-#             # 処理した画像と結果を返す
-#             return jsonify({
-#                 "results": results,
-#                 "score": score
-#             })
-#         except Exception as e:
-#             return jsonify({'error': str(e)}), 500
-
-#     return jsonify({'error': 'Invalid file format'}), 400
-
-# if __name__ == '__main__':
-#     # アップロードフォルダが存在しない場合は作成
-#     if not os.path.exists(app.config['UPLOAD_FOLDER']):
-#         os.makedirs(app.config['UPLOAD_FOLDER'])
-
-#     # Flaskアプリケーションの実行
-#     app.run(debug=True)
