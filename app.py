@@ -55,3 +55,6 @@ def index():
 if __name__ == '__main__':
     # サーバーの実行
     app.run(debug=True)
+
+
+
