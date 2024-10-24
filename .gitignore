@@ -1,0 +1,8 @@
+# 省略するディレクトリ
+/foodphotograph-mirror/
+/foodphotograph-mirror-clean/
+
+# Gitの内部ファイルを無視
+*.pack
+*.idx
+*.git
